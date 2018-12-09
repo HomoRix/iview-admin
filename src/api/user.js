@@ -6,7 +6,7 @@ export const login = ({ userName, password }) => {
     password
   }
   return axios.request({
-    url: 'login',
+    url: 'login.json',
     data,
     method: 'post'
   })
@@ -14,7 +14,7 @@ export const login = ({ userName, password }) => {
 
 export const getUserInfo = (token) => {
   return axios.request({
-    url: 'get_info',
+    url: 'get_info.json',
     params: {
       token
     },
@@ -24,28 +24,28 @@ export const getUserInfo = (token) => {
 
 export const logout = (token) => {
   return axios.request({
-    url: 'logout',
+    url: 'logout.json',
     method: 'post'
   })
 }
 
 export const getUnreadCount = () => {
   return axios.request({
-    url: 'message/count',
+    url: 'message/count.json',
     method: 'get'
   })
 }
 
 export const getMessage = () => {
   return axios.request({
-    url: 'message/init',
+    url: 'message/init.json',
     method: 'get'
   })
 }
 
 export const getContentByMsgId = msg_id => {
   return axios.request({
-    url: 'message/content',
+    url: 'message/content.json',
     method: 'get',
     params: {
       msg_id
@@ -55,7 +55,7 @@ export const getContentByMsgId = msg_id => {
 
 export const hasRead = msg_id => {
   return axios.request({
-    url: 'message/has_read',
+    url: 'message/has_read.json',
     method: 'post',
     data: {
       msg_id
@@ -65,7 +65,7 @@ export const hasRead = msg_id => {
 
 export const removeReaded = msg_id => {
   return axios.request({
-    url: 'message/remove_readed',
+    url: 'message/remove_readed.json',
     method: 'post',
     data: {
       msg_id
@@ -75,7 +75,7 @@ export const removeReaded = msg_id => {
 
 export const restoreTrash = msg_id => {
   return axios.request({
-    url: 'message/restore',
+    url: 'message/restore.json',
     method: 'post',
     data: {
       msg_id
