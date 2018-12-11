@@ -1,5 +1,5 @@
 import Main from '@/components/main'
-import parentView from '@/components/parent-view'
+// import parentView from '@/components/parent-view'
 
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
@@ -51,14 +51,90 @@ export default [
     ]
   },
   {
-    path: '',
-    name: 'doc',
+    path: '/tags',
+    name: 'tags',
     meta: {
-      title: '文档',
-      href: 'https://lison16.github.io/iview-admin-doc/#/',
-      icon: 'ios-book'
-    }
+      icon: 'logo-buffer',
+      title: 'Tag标签管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'tags_list_page',
+        name: 'tags_list_page',
+        meta: {
+          icon: 'md-grid',
+          title: '标签列表'
+        },
+        component: () => import('@/view/components/tables/tables.vue')
+      },
+      {
+        path: 'tags_add_page',
+        name: 'tags_add_page',
+        meta: {
+          icon: 'md-grid',
+          title: '新增标签'
+        },
+        component: () => import('@/view/components/tables/tables.vue')
+      },
+      {
+        path: 'tags_edit_page',
+        name: 'tags_edit_page',
+        meta: {
+          icon: 'md-grid',
+          title: '编辑标签'
+        },
+        component: () => import('@/view/components/tables/tables.vue')
+      }
+    ]
   },
+  {
+    path: '/categories',
+    name: 'categories',
+    meta: {
+      icon: 'logo-buffer',
+      title: 'Tag标签管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'categories_list_page',
+        name: 'categories_list_page',
+        meta: {
+          icon: 'md-grid',
+          title: '分类列表'
+        },
+        component: () => import('@/view/components/tables/tables.vue')
+      },
+      {
+        path: 'categories_add_page',
+        name: 'categories_add_page',
+        meta: {
+          icon: 'md-grid',
+          title: '新增分类'
+        },
+        component: () => import('@/view/components/tables/tables.vue')
+      },
+      {
+        path: 'categories_edit_page',
+        name: 'categories_edit_page',
+        meta: {
+          icon: 'md-grid',
+          title: '编辑分类'
+        },
+        component: () => import('@/view/components/tables/tables.vue')
+      }
+    ]
+  },
+  // {
+  //   path: '',
+  //   name: 'doc',
+  //   meta: {
+  //     title: '文档',
+  //     href: 'https://lison16.github.io/iview-admin-doc/#/',
+  //     icon: 'ios-book'
+  //   }
+  // },
   {
     path: '/join',
     name: 'join',
@@ -107,51 +183,51 @@ export default [
     },
     component: Main,
     children: [
-      {
-        path: 'count_to_page',
-        name: 'count_to_page',
-        meta: {
-          icon: 'md-trending-up',
-          title: '数字渐变'
-        },
-        component: () => import('@/view/components/count-to/count-to.vue')
-      },
-      {
-        path: 'drag_list_page',
-        name: 'drag_list_page',
-        meta: {
-          icon: 'ios-infinite',
-          title: '拖拽列表'
-        },
-        component: () => import('@/view/components/drag-list/drag-list.vue')
-      },
-      {
-        path: 'tree_table_page',
-        name: 'tree_table_page',
-        meta: {
-          icon: 'md-git-branch',
-          title: '树状表格'
-        },
-        component: () => import('@/view/components/tree-table/index.vue')
-      },
-      {
-        path: 'cropper_page',
-        name: 'cropper_page',
-        meta: {
-          icon: 'md-crop',
-          title: '图片裁剪'
-        },
-        component: () => import('@/view/components/cropper/cropper.vue')
-      },
-      {
-        path: 'tables_page',
-        name: 'tables_page',
-        meta: {
-          icon: 'md-grid',
-          title: '多功能表格'
-        },
-        component: () => import('@/view/components/tables/tables.vue')
-      },
+      // {
+      //   path: 'count_to_page',
+      //   name: 'count_to_page',
+      //   meta: {
+      //     icon: 'md-trending-up',
+      //     title: '数字渐变'
+      //   },
+      //   component: () => import('@/view/components/count-to/count-to.vue')
+      // },
+      // {
+      //   path: 'drag_list_page',
+      //   name: 'drag_list_page',
+      //   meta: {
+      //     icon: 'ios-infinite',
+      //     title: '拖拽列表'
+      //   },
+      //   component: () => import('@/view/components/drag-list/drag-list.vue')
+      // },
+      // {
+      //   path: 'tree_table_page',
+      //   name: 'tree_table_page',
+      //   meta: {
+      //     icon: 'md-git-branch',
+      //     title: '树状表格'
+      //   },
+      //   component: () => import('@/view/components/tree-table/index.vue')
+      // },
+      // {
+      //   path: 'cropper_page',
+      //   name: 'cropper_page',
+      //   meta: {
+      //     icon: 'md-crop',
+      //     title: '图片裁剪'
+      //   },
+      //   component: () => import('@/view/components/cropper/cropper.vue')
+      // },
+      // {
+      //   path: 'tables_page',
+      //   name: 'tables_page',
+      //   meta: {
+      //     icon: 'md-grid',
+      //     title: '多功能表格'
+      //   },
+      //   component: () => import('@/view/components/tables/tables.vue')
+      // },
       {
         path: 'split_pane_page',
         name: 'split_pane_page',
@@ -344,120 +420,120 @@ export default [
         component: () => import('@/view/directive/directive.vue')
       }
     ]
-  },
-  {
-    path: '/multilevel',
-    name: 'multilevel',
-    meta: {
-      icon: 'md-menu',
-      title: '多级菜单'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'level_2_1',
-        name: 'level_2_1',
-        meta: {
-          icon: 'md-funnel',
-          title: '二级-1'
-        },
-        component: () => import('@/view/multilevel/level-2-1.vue')
-      },
-      {
-        path: 'level_2_2',
-        name: 'level_2_2',
-        meta: {
-          access: ['super_admin'],
-          icon: 'md-funnel',
-          showAlways: true,
-          title: '二级-2'
-        },
-        component: parentView,
-        children: [
-          {
-            path: 'level_2_2_1',
-            name: 'level_2_2_1',
-            meta: {
-              icon: 'md-funnel',
-              title: '三级'
-            },
-            component: () => import('@/view/multilevel/level-2-2/level-2-2-1.vue')
-          },
-          {
-            path: 'level_2_2_2',
-            name: 'level_2_2_2',
-            meta: {
-              icon: 'md-funnel',
-              title: '三级'
-            },
-            component: () => import('@/view/multilevel/level-2-2/level-2-2-2.vue')
-          }
-        ]
-      },
-      {
-        path: 'level_2_3',
-        name: 'level_2_3',
-        meta: {
-          icon: 'md-funnel',
-          title: '二级-3'
-        },
-        component: () => import('@/view/multilevel/level-2-3.vue')
-      }
-    ]
-  },
-  {
-    path: '/argu',
-    name: 'argu',
-    meta: {
-      hideInMenu: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'params/:id',
-        name: 'params',
-        meta: {
-          icon: 'md-flower',
-          title: route => `{{ params }}-${route.params.id}`,
-          notCache: true,
-          beforeCloseName: 'before_close_normal'
-        },
-        component: () => import('@/view/argu-page/params.vue')
-      },
-      {
-        path: 'query',
-        name: 'query',
-        meta: {
-          icon: 'md-flower',
-          title: route => `{{ query }}-${route.query.id}`,
-          notCache: true
-        },
-        component: () => import('@/view/argu-page/query.vue')
-      }
-    ]
-  },
-  {
-    path: '/401',
-    name: 'error_401',
-    meta: {
-      hideInMenu: true
-    },
-    component: () => import('@/view/error-page/401.vue')
-  },
-  {
-    path: '/500',
-    name: 'error_500',
-    meta: {
-      hideInMenu: true
-    },
-    component: () => import('@/view/error-page/500.vue')
-  },
-  {
-    path: '*',
-    name: 'error_404',
-    meta: {
-      hideInMenu: true
-    },
-    component: () => import('@/view/error-page/404.vue')
   }
+  // {
+  //   path: '/multilevel',
+  //   name: 'multilevel',
+  //   meta: {
+  //     icon: 'md-menu',
+  //     title: '多级菜单'
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'level_2_1',
+  //       name: 'level_2_1',
+  //       meta: {
+  //         icon: 'md-funnel',
+  //         title: '二级-1'
+  //       },
+  //       component: () => import('@/view/multilevel/level-2-1.vue')
+  //     },
+  //     {
+  //       path: 'level_2_2',
+  //       name: 'level_2_2',
+  //       meta: {
+  //         access: ['super_admin'],
+  //         icon: 'md-funnel',
+  //         showAlways: true,
+  //         title: '二级-2'
+  //       },
+  //       component: parentView,
+  //       children: [
+  //         {
+  //           path: 'level_2_2_1',
+  //           name: 'level_2_2_1',
+  //           meta: {
+  //             icon: 'md-funnel',
+  //             title: '三级'
+  //           },
+  //           component: () => import('@/view/multilevel/level-2-2/level-2-2-1.vue')
+  //         },
+  //         {
+  //           path: 'level_2_2_2',
+  //           name: 'level_2_2_2',
+  //           meta: {
+  //             icon: 'md-funnel',
+  //             title: '三级'
+  //           },
+  //           component: () => import('@/view/multilevel/level-2-2/level-2-2-2.vue')
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       path: 'level_2_3',
+  //       name: 'level_2_3',
+  //       meta: {
+  //         icon: 'md-funnel',
+  //         title: '二级-3'
+  //       },
+  //       component: () => import('@/view/multilevel/level-2-3.vue')
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/argu',
+  //   name: 'argu',
+  //   meta: {
+  //     hideInMenu: true
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'params/:id',
+  //       name: 'params',
+  //       meta: {
+  //         icon: 'md-flower',
+  //         title: route => `{{ params }}-${route.params.id}`,
+  //         notCache: true,
+  //         beforeCloseName: 'before_close_normal'
+  //       },
+  //       component: () => import('@/view/argu-page/params.vue')
+  //     },
+  //     {
+  //       path: 'query',
+  //       name: 'query',
+  //       meta: {
+  //         icon: 'md-flower',
+  //         title: route => `{{ query }}-${route.query.id}`,
+  //         notCache: true
+  //       },
+  //       component: () => import('@/view/argu-page/query.vue')
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/401',
+  //   name: 'error_401',
+  //   meta: {
+  //     hideInMenu: true
+  //   },
+  //   component: () => import('@/view/error-page/401.vue')
+  // },
+  // {
+  //   path: '/500',
+  //   name: 'error_500',
+  //   meta: {
+  //     hideInMenu: true
+  //   },
+  //   component: () => import('@/view/error-page/500.vue')
+  // },
+  // {
+  //   path: '*',
+  //   name: 'error_404',
+  //   meta: {
+  //     hideInMenu: true
+  //   },
+  //   component: () => import('@/view/error-page/404.vue')
+  // }
 ]
