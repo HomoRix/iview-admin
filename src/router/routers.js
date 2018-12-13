@@ -66,25 +66,7 @@ export default [
           icon: 'md-grid',
           title: '标签列表'
         },
-        component: () => import('@/view/components/tables/tables.vue')
-      },
-      {
-        path: 'tags_add_page',
-        name: 'tags_add_page',
-        meta: {
-          icon: 'md-grid',
-          title: '新增标签'
-        },
-        component: () => import('@/view/components/tables/tables.vue')
-      },
-      {
-        path: 'tags_edit_page',
-        name: 'tags_edit_page',
-        meta: {
-          icon: 'md-grid',
-          title: '编辑标签'
-        },
-        component: () => import('@/view/components/tables/tables.vue')
+        component: () => import('@/view/components/list/TagList.vue')
       }
     ]
   },
@@ -104,25 +86,7 @@ export default [
           icon: 'md-grid',
           title: '分类列表'
         },
-        component: () => import('@/view/components/tables/tables.vue')
-      },
-      {
-        path: 'categories_add_page',
-        name: 'categories_add_page',
-        meta: {
-          icon: 'md-grid',
-          title: '新增分类'
-        },
-        component: () => import('@/view/components/tables/tables.vue')
-      },
-      {
-        path: 'categories_edit_page',
-        name: 'categories_edit_page',
-        meta: {
-          icon: 'md-grid',
-          title: '编辑分类'
-        },
-        component: () => import('@/view/components/tables/tables.vue')
+        component: () => import('@/view/components/list/CategoryList.vue')
       }
     ]
   },
