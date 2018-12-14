@@ -51,6 +51,26 @@ export default [
     ]
   },
   {
+    path: '/dappInfos',
+    name: 'dappInfos',
+    meta: {
+      icon: 'logo-buffer',
+      title: 'Tag标签管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'dappInfos_list_page',
+        name: 'dappInfos_list_page',
+        meta: {
+          icon: 'md-grid',
+          title: 'Dapp列表'
+        },
+        component: () => import('@/view/components/list/DappInfoList.vue')
+      }
+    ]
+  },
+  {
     path: '/tags',
     name: 'tags',
     meta: {

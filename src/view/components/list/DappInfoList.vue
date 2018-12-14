@@ -6,7 +6,18 @@
         <Card>
           <Form :label-width='80' inline>
             <Form-item label='输入框'>
-              <Input v-model='formItem.searchText' placeholder='请输入' style='width:187px'></Input>
+              <Input v-model='formItem.searchText' placeholder='请输入' style='width:187px'/>
+            </Form-item>
+            <Form-item label='选择平台'>
+              <Select v-model='params.category' placeholder='请选择' style='width:187px'>
+                <Option value='Android'>Android</Option>
+                <Option value='iOS'>iOS</Option>
+                <Option value='休息视频'>休息视频</Option>
+                <Option value='福利'>福利</Option>
+                <Option value='拓展资源'>拓展资源</Option>
+                <Option value='前端'>前端</Option>
+                <Option value='App'>App</Option>
+              </Select>
             </Form-item>
             <div
               class='clearfix'
@@ -102,8 +113,61 @@
       </p>
       <div style='text-align:center'>
         <Form :model='formItem' :label-width='80'>
-          <Form-item label='标签名称'>
-            <Input v-model='currDate.name' placeholder='请输入'></Input>
+          <Form-item label='名称'>
+            <Input v-model='currDate.name' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='创建日期'>
+            <Date-picker
+              type='date'
+              placeholder='选择日期'
+              style='width:100%'
+              v-model='currDate.createDate'
+              :editable='false'
+            ></Date-picker>
+          </Form-item>
+          <Form-item label='邮箱'>
+            <Input v-model='currDate.email' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Blog' v-if="currDate.socials">
+            <Input v-model='currDate.socials.blog.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Chat' v-if="currDate.socials">
+            <Input v-model='currDate.socials.chat.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Github' v-if="currDate.socials && currDate.socials.github">
+            <Input v-model='currDate.socials.github.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Reddit' v-if="currDate.socials && currDate.socials.reddit">
+            <Input v-model='currDate.socials.reddit.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Twitter' v-if="currDate.socials && currDate.socials.twitter">
+            <Input v-model='currDate.socials.twitter.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Facebook' v-if="currDate.socials && currDate.socials.facebook">
+            <Input v-model='currDate.socials.facebook.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Slogan标语'>
+            <Input v-model='currDate.teaser' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='选择状态'>
+            <Select v-model='currDate.status' placeholder='请选择'>
+              <Option value='live'>Live</Option>
+              <Option value='beta'>Beta</Option>
+              <Option value='prototype'>Prototype</Option>
+              <Option value='wip'>Work in progress</Option>
+              <Option value='concept'>Concept</Option>
+              <Option value='broken'>Broken</Option>
+              <Option value='stealth'>Stealth</Option>
+              <Option value='abandoned'>Abandoned</Option>
+            </Select>
+          </Form-item>
+          <Form-item label='描述'>
+            <Input
+              v-model='currDate.desc'
+              type='textarea'
+              :autosize='{minRows: 2,maxRows: 5}'
+              placeholder='请输入...'
+            />
           </Form-item>
         </Form>
       </div>
@@ -112,7 +176,7 @@
           type='success'
           size='large'
           long
-          @click.native='saveBatch(currDate.id, currDate.name)'
+          @click.native='saveBatch'
           :loading='loading'
           :disabled='saveDisabled'
         >保存</Button>
@@ -123,7 +187,7 @@
 </template>
 <script>
 import elementResizeDetectorMaker from 'element-resize-detector'
-import { getTagListData, deleteTag, updateTag, addTag } from '@/api/data'
+import { getDappInfoListData, deleteDappInfo, updateDappInfo, addDappInfo } from '@/api/data'
 var erd = elementResizeDetectorMaker()
 export default {
   name: 'list',
@@ -131,7 +195,13 @@ export default {
   data () {
     return {
       formItem: {
-        searchText: ''
+        input: '',
+        select: '',
+        searchText: '',
+        date: '',
+        time: '',
+        radio: '',
+        checkbox: []
       },
       searchState: false,
       editModal: false,
@@ -159,17 +229,58 @@ export default {
           // @:columns
           type: 'selection', // 开启checkbox
           width: 60,
-          align: 'center'
+          align: 'center',
+          fixed: 'left'
         },
         {
           title: '创建日期',
           key: 'createDate',
-          sortable: true
+          sortable: true,
+          fixed: 'left',
+          width: 130
         },
         {
           title: '名称',
           key: 'name',
-          className: 'min-width'
+          // className: 'min-width',
+          fixed: 'left',
+          width: 130
+        },
+        {
+          title: '邮箱',
+          key: 'email',
+          // className: 'min-width',
+          width: 130
+        },
+        {
+          title: 'slogan标语',
+          key: 'teaser',
+          // className: 'min-width',
+          width: 130
+        },
+        {
+          title: '许可证',
+          key: 'license',
+          // className: 'min-width',
+          width: 130
+        },
+        {
+          title: '分类',
+          key: 'category',
+          // className: 'min-width',
+          width: 130
+        },
+        {
+          title: '平台',
+          key: 'platform',
+          // className: 'min-width',
+          width: 130
+        },
+        {
+          title: '状态',
+          key: 'status',
+          // className: 'min-width',
+          width: 130
         },
         {
           title: '操作',
@@ -291,11 +402,12 @@ export default {
      * */
     getData (params) {
       this.loading2 = true
-      getTagListData(params).then(res => {
+      getDappInfoListData(params).then(res => {
         let responseData = res.data
         if (!responseData) {
           return
         }
+        console.log('fffff:' + JSON.stringify(responseData))
         if (responseData.type && responseData.type === 'success') {
           this.result = responseData.result
           if (this.result) {
@@ -333,13 +445,19 @@ export default {
       this.detailModal = true
       this.$Modal.info({
         title: '详情',
-        content: `标签名称：${this.listData[index].name}`
+        content: `名称：${this.listData[index].name}<br>邮箱：${
+          this.listData[index].email
+        }<br>分类：${this.listData[index].category}<br>状态：${
+          this.listData[index].status
+        }<br>许可证：${
+          this.listData[index].license
+        }`
       })
     },
     remove (tagId, index) {
       let params = {}
       params.ids = tagId
-      deleteTag(params).then(res => {
+      deleteDappInfo(params).then(res => {
         let responseData = res.data
         if (!responseData) {
           return
@@ -357,7 +475,15 @@ export default {
       if (index === -1) {
         // 新增
         this.currDate = {
-          name: ''
+          socials: {},
+          createdAt: '',
+          name: '',
+          desc: '',
+          publishedAt: '',
+          type: '',
+          used: true,
+          who: '',
+          url: 'c.fwone.com'
         }
       } else {
         // 编辑
@@ -382,7 +508,7 @@ export default {
       // ...
       let params = {}
       params.ids = tagIds.join()
-      deleteTag(params).then(res => {
+      deleteDappInfo(params).then(res => {
         let responseData = res.data
         if (!responseData) {
           return
@@ -400,7 +526,7 @@ export default {
       params.name = name
       if (this.currIndex !== -1) { // 编辑模式
         params.id = id
-        updateTag(params).then(res => {
+        updateDappInfo(params).then(res => {
           let responseData = res.data
           if (!responseData) {
             return
@@ -419,7 +545,7 @@ export default {
           }
         })
       } else {
-        addTag(params).then(res => {
+        addDappInfo(params).then(res => {
           let responseData = res.data
           if (!responseData) {
             return

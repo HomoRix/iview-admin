@@ -1,5 +1,37 @@
 import axios from '@/libs/api.request'
 
+export const getDappInfoListData = (params) => {
+  return axios.request({
+    url: 'dappInfo/list.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const addDappInfo = (params) => {
+  return axios.request({
+    url: 'dappInfo/add.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const deleteDappInfo = (params) => {
+  return axios.request({
+    url: 'dappInfo/delete.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const updateDappInfo = (params) => {
+  return axios.request({
+    url: 'dappInfo/update.json',
+    params: params,
+    method: 'get'
+  })
+}
+
 export const getTagListData = (params) => {
   return axios.request({
     url: 'tag/list.json',

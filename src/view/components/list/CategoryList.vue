@@ -112,7 +112,7 @@
           type='success'
           size='large'
           long
-          @click.native='saveBatch(currDate.name)'
+          @click.native='saveBatch(currDate.id, currDate.name)'
           :loading='loading'
           :disabled='saveDisabled'
         >保存</Button>
@@ -292,15 +292,14 @@ export default {
     getData (params) {
       this.loading2 = true
       getCategoryListData(params).then(res => {
-        console.log('XXX:' + JSON.stringify(res))
         let responseData = res.data
         if (!responseData) {
           return
         }
-        if (responseData.type || responseData.type === 'success') {
-          this.page = responseData.result.page
-          if (this.page) {
-            this.listData = this.page.content
+        if (responseData.type && responseData.type === 'success') {
+          this.result = responseData.result
+          if (this.result) {
+            this.listData = this.result.list
             this.DateReady = true
             this.loading2 = false
           }
@@ -395,11 +394,12 @@ export default {
         }
       })
     },
-    saveBatch (name) {
+    saveBatch (id, name) {
       this.loading = true
       let params = {}
       params.name = name
       if (this.currIndex !== -1) { // 编辑模式
+        params.id = id
         updateCategory(params).then(res => {
           let responseData = res.data
           if (!responseData) {
