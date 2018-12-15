@@ -10,7 +10,7 @@
             </Form-item>
             <Form-item label='选择平台'>
               <Select v-model='params.category' placeholder='请选择' style='width:187px'>
-                <Option value='Android'>Android</Option>
+                <Option value='games'>games</Option>
                 <Option value='iOS'>iOS</Option>
                 <Option value='休息视频'>休息视频</Option>
                 <Option value='福利'>福利</Option>
@@ -113,20 +113,84 @@
       </p>
       <div style='text-align:center'>
         <Form :model='formItem' :label-width='80'>
-          <Form-item label='名称'>
+          <Form-item label='名称*'>
             <Input v-model='currDate.name' placeholder='请输入'/>
           </Form-item>
-          <Form-item label='创建日期'>
-            <Date-picker
+          <Form-item label='创建日期' v-if="currIndex!=-1">
+            <!-- <Date-picker
               type='date'
               placeholder='选择日期'
               style='width:100%'
               v-model='currDate.createDate'
               :editable='false'
-            ></Date-picker>
+            ></Date-picker> -->
+            <span>{{currDate.createDate}}</span>
           </Form-item>
-          <Form-item label='邮箱'>
+          <Form-item label='邮箱*'>
             <Input v-model='currDate.email' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Slogan标语*'>
+            <Input v-model='currDate.teaser' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='选择分类*'>
+            <Select v-model='currDate.category' placeholder='请选择'>
+              <Option value='games'>Games</Option>
+              <Option value='live'>Live</Option>
+              <Option value='beta'>Beta</Option>
+              <Option value='prototype'>Prototype</Option>
+              <Option value='wip'>Work in progress</Option>
+              <Option value='concept'>Concept</Option>
+              <Option value='broken'>Broken</Option>
+              <Option value='stealth'>Stealth</Option>
+              <Option value='abandoned'>Abandoned</Option>
+            </Select>
+          </Form-item>
+          <Form-item label='选择状态*'>
+            <Select v-model='currDate.status' placeholder='请选择'>
+              <Option value='live'>Live</Option>
+              <Option value='beta'>Beta</Option>
+              <Option value='prototype'>Prototype</Option>
+              <Option value='wip'>Work in progress</Option>
+              <Option value='concept'>Concept</Option>
+              <Option value='broken'>Broken</Option>
+              <Option value='stealth'>Stealth</Option>
+              <Option value='abandoned'>Abandoned</Option>
+            </Select>
+          </Form-item>
+          <Form-item label='描述*'>
+            <Input
+              v-model='currDate.description'
+              type='textarea'
+              :autosize='{minRows: 2,maxRows: 5}'
+              placeholder='请输入...'
+            />
+          </Form-item>
+          <Form-item label='Logo*'>
+            <!-- <Input v-model='currDate.logoUrl' placeholder='请输入'/> -->
+            <BaseFileUpload
+              :resize-width="192"
+              message="<span class=dropzone-plus><img width=150 src=/images/upload-logo.png></span><br>Drop your icon here, or click to select"
+              @uploadSuccess="setLogo"
+              @removeFile="removeLogo"/>
+            <img v-bind:src='currDate.logoUrl'/>
+          </Form-item>
+          <Form-item label='Icon*'>
+            <!-- <Input v-model='currDate.iconUrl' placeholder='请输入'/> -->
+            <BaseFileUpload
+              :resize-width="192"
+              message="<span class=dropzone-plus><img width=150 src=/images/upload-icon.png></span><br>Drop your icon here, or click to select"
+              @uploadSuccess="setIcon"
+              @removeFile="removeIcon"/>
+            <img v-bind:src='currDate.iconUrl'/>
+          </Form-item>
+          <Form-item label='Product image*'>
+            <!-- <Input v-model='currDate.productImage' placeholder='请输入'/> -->
+            <BaseFileUpload
+              :resize-width="192"
+              message="<span class=dropzone-plus><img width=150 src=/images/upload-product-image.png></span><br>Drop your icon here, or click to select"
+              @uploadSuccess="setProductImage"
+              @removeFile="removeProductImage"/>
+            <img v-bind:src='currDate.productImage'/>
           </Form-item>
           <Form-item label='Blog' v-if="currDate.socials">
             <Input v-model='currDate.socials.blog.path' placeholder='请输入'/>
@@ -146,29 +210,6 @@
           <Form-item label='Facebook' v-if="currDate.socials && currDate.socials.facebook">
             <Input v-model='currDate.socials.facebook.path' placeholder='请输入'/>
           </Form-item>
-          <Form-item label='Slogan标语'>
-            <Input v-model='currDate.teaser' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='选择状态'>
-            <Select v-model='currDate.status' placeholder='请选择'>
-              <Option value='live'>Live</Option>
-              <Option value='beta'>Beta</Option>
-              <Option value='prototype'>Prototype</Option>
-              <Option value='wip'>Work in progress</Option>
-              <Option value='concept'>Concept</Option>
-              <Option value='broken'>Broken</Option>
-              <Option value='stealth'>Stealth</Option>
-              <Option value='abandoned'>Abandoned</Option>
-            </Select>
-          </Form-item>
-          <Form-item label='描述'>
-            <Input
-              v-model='currDate.desc'
-              type='textarea'
-              :autosize='{minRows: 2,maxRows: 5}'
-              placeholder='请输入...'
-            />
-          </Form-item>
         </Form>
       </div>
       <div slot='footer'>
@@ -176,7 +217,7 @@
           type='success'
           size='large'
           long
-          @click.native='saveBatch'
+          @click.native='saveBatch(currDate)'
           :loading='loading'
           :disabled='saveDisabled'
         >保存</Button>
@@ -188,20 +229,30 @@
 <script>
 import elementResizeDetectorMaker from 'element-resize-detector'
 import { getDappInfoListData, deleteDappInfo, updateDappInfo, addDappInfo } from '@/api/data'
+import BaseFileUpload from '../upload/BaseFileUpload'
 var erd = elementResizeDetectorMaker()
 export default {
   name: 'list',
-  components: {},
+  components: {
+    BaseFileUpload: BaseFileUpload
+  },
   data () {
     return {
+      errorCheckFields: [
+        'authors',
+        'category',
+        'description',
+        'email',
+        'name',
+        'status',
+        'tags',
+        'teaser',
+        'website',
+        'icon',
+        'logo'
+      ],
       formItem: {
-        input: '',
-        select: '',
-        searchText: '',
-        date: '',
-        time: '',
-        radio: '',
-        checkbox: []
+        searchText: ''
       },
       searchState: false,
       editModal: false,
@@ -219,6 +270,7 @@ export default {
       params: {
         page: 1,
         limit: 10,
+        category: '',
         searchText: ''
       },
       selection: [], // 表格选中项
@@ -370,12 +422,18 @@ export default {
     },
     currDate: {
       handler (val) {
-        for (let i = 0; i < Object.values(val).length; i++) {
-          if (Object.values(val)[i] === '') {
-            this.saveDisabled = true
-            return
-          } else {
-            this.saveDisabled = false
+        // console.log('val:' + JSON.stringify(val))
+        // console.log('val:' + JSON.stringify(Object.keys(val)))
+        let keys = Object.keys(val)
+        for (let i = 0; i < keys.length; i++) {
+          if (this.errorCheckFields && (this.errorCheckFields.indexOf(keys[i]) > -1)) {
+            // console.log('valddd:' + keys[i] + ',' + Object.values(val)[i])
+            if (Object.values(val)[i] === '') {
+              this.saveDisabled = true
+              return
+            } else {
+              this.saveDisabled = false
+            }
           }
         }
       },
@@ -388,6 +446,30 @@ export default {
     }
   },
   methods: {
+    setLogo (response) {
+      if (response) {
+        this.currDate.logoUrl = response.url || ''
+      }
+    },
+    removeLogo () {
+      this.currDate.logoUrl = ''
+    },
+    setIcon (response) {
+      if (response) {
+        this.currDate.iconUrl = response.url || ''
+      }
+    },
+    removeIcon () {
+      this.currDate.iconUrl = ''
+    },
+    setProductImage (response) {
+      if (response) {
+        this.currDate.productImage = response.url || ''
+      }
+    },
+    removeProductImage () {
+      this.currDate.productImage = ''
+    },
     searchShow () {
       this.searchState = !this.searchState
     },
@@ -407,7 +489,6 @@ export default {
         if (!responseData) {
           return
         }
-        console.log('fffff:' + JSON.stringify(responseData))
         if (responseData.type && responseData.type === 'success') {
           this.result = responseData.result
           if (this.result) {
@@ -449,8 +530,26 @@ export default {
           this.listData[index].email
         }<br>分类：${this.listData[index].category}<br>状态：${
           this.listData[index].status
-        }<br>许可证：${
-          this.listData[index].license
+        }<br>Slogan标语：${
+          this.listData[index].teaser
+        }<br>Logo：<image src='${
+          this.listData[index].logoUrl
+        }'/><br>Icon：<image src='${
+          this.listData[index].iconUrl
+        }'/><br>ProductImage：<image src='${
+          this.listData[index].productImage
+        }'/><br>Blog：${
+          this.listData[index].socials.blog.path
+        }<br>Chat：${
+          this.listData[index].socials.chat.path
+        }<br>Github：${
+          this.listData[index].socials.github.path
+        }<br>Reddit：${
+          this.listData[index].socials.reddit.path
+        }<br>Twitter：${
+          this.listData[index].socials.twitter.path
+        }<br>Facebook：${
+          this.listData[index].socials.facebook.path
         }`
       })
     },
@@ -475,15 +574,34 @@ export default {
       if (index === -1) {
         // 新增
         this.currDate = {
-          socials: {},
-          createdAt: '',
+          socials: {
+            blog: { path: null },
+            chat: { path: null },
+            reddit: { path: null },
+            twitter: { path: null },
+            github: { path: null },
+            facebook: { path: null }
+          },
+          createDate: '',
           name: '',
-          desc: '',
-          publishedAt: '',
-          type: '',
-          used: true,
-          who: '',
-          url: 'c.fwone.com'
+          description: '',
+          status: '',
+          teaser: '',
+          email: '',
+          category: '',
+          dapp: '',
+          website: '',
+          authors: '',
+          tags: '',
+          badges: '',
+          audits: '',
+          license: '',
+          logoUrl: '',
+          iconUrl: '',
+          productImage: '',
+          platform: '',
+          imageKeyVisual: '',
+          submitReason: ''
         }
       } else {
         // 编辑
@@ -520,13 +638,62 @@ export default {
         }
       })
     },
-    saveBatch (id, name) {
+    transferParams (params) {
+      // for (var i in params) {
+      //   if (Array.isArray(params[i])) {
+      //     let newValue = params[i].join()
+      //     params[i] = newValue
+      //   }
+      // }
+      var self = this
+      for (var i in params) {
+        if (typeof (params[i]) === 'undefined') {
+          continue
+        }
+        if (typeof (params[i]) === 'string' || typeof (params[i]) === 'number' || typeof (params[i]) === 'boolean') {
+          params[i] = encodeURIComponent(params[i])
+        } else if (Array.isArray(params[i])) { // Array.isArray(params[i])
+          params[i].forEach(function (item, index) {
+            var key = i
+            var k = key == null ? index : key + (params[i] instanceof Array ? '[' + index + ']' : '.' + index)
+            params[i] = self.parseParam(params[i], k)
+          })
+        } else if (typeof (params[i]) === 'object') {
+          params[i] = self.parseParam(params[i], i)
+        }
+      }
+    },
+    parseParam (param, key) {
+      if (!param) {
+        return
+      }
+      var self = this
+      var paramStr = ''
+      if (typeof (param) === 'string' || typeof (param) === 'number' || typeof (param) === 'boolean') {
+        paramStr += '&' + key + '=' + encodeURIComponent(param)
+      } else if (Array.isArray(param)) { // Array.isArray(param)
+        param.forEach(function (item, index) {
+          var k = key == null ? index : key + (param instanceof Array ? '[' + index + ']' : '.' + index)
+          paramStr += '&' + self.parseParam(this, k)
+        })
+      } else if (typeof (param) === 'object') {
+        paramStr += '&' + self.parseParam(param, key)
+      }
+      return paramStr.substr(1)
+    },
+    saveBatch (dappInfo) {
+      if (!dappInfo) {
+        return
+      }
       this.loading = true
       let params = {}
-      params.name = name
+      // params.name = dappInfo.name
+      params = Object.assign({}, dappInfo)
+      this.transferParams(params)
       if (this.currIndex !== -1) { // 编辑模式
-        params.id = id
+        params.id = dappInfo.id
         updateDappInfo(params).then(res => {
+          console.log('GGGGG:' + JSON.stringify(res))
           let responseData = res.data
           if (!responseData) {
             return
