@@ -17,8 +17,8 @@ export default {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'http://prod.cmtdapps.com:8080/dapp-store/api/dappStore/', // 'https://www.easy-mock.com/mock/5add9213ce4d0e69998a6f51/iview-admin/',
-    pro: 'https://www.easy-mock.com/mock/5add9213ce4d0e69998a6f51/iview-admin/' // 'https://produce.com'
+    dev: 'http://test.cmtdapps.com:8080/api/dappStore/', // 'http://localhost:8080/api/dappStore/', // 'https://www.easy-mock.com/mock/5add9213ce4d0e69998a6f51/iview-admin/',
+    pro: 'http://prod.cmtdapps.com:8080/api/dappStore/' // 'https://www.easy-mock.com/mock/5add9213ce4d0e69998a6f51/iview-admin/' // 'https://produce.com'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home
