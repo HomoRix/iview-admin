@@ -9,14 +9,8 @@
               <Input v-model='formItem.searchText' placeholder='请输入' style='width:187px'/>
             </Form-item>
             <Form-item label='选择平台'>
-              <Select v-model='params.category' placeholder='请选择' style='width:187px'>
-                <Option value='games'>games</Option>
-                <Option value='iOS'>iOS</Option>
-                <Option value='休息视频'>休息视频</Option>
-                <Option value='福利'>福利</Option>
-                <Option value='拓展资源'>拓展资源</Option>
-                <Option value='前端'>前端</Option>
-                <Option value='App'>App</Option>
+              <Select v-model='currDate.category' placeholder='请选择' style='width:187px, z-index: 200'>
+                <Option v-for="(item,index) in categories" :key="index" :value="item.slug">{{ item.name }}</Option>
               </Select>
             </Form-item>
             <div
@@ -105,7 +99,7 @@
     </Modal>
     <!--删除提示 / -->
     <!-- 编辑 -->
-    <Modal v-model='editModal' v-if='DateReady'>
+    <Modal v-model='editModal' v-if='DateReady' :style="{'z-index': 300}">
       <p slot='header' style='text-align:center'>
         <Icon type='information-circled'></Icon>
         <span v-if='currIndex==-1'>新增</span>
