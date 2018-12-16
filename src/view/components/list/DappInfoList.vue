@@ -134,27 +134,12 @@
           </Form-item>
           <Form-item label='选择分类*'>
             <Select v-model='currDate.category' placeholder='请选择'>
-              <Option value='games'>Games</Option>
-              <Option value='live'>Live</Option>
-              <Option value='beta'>Beta</Option>
-              <Option value='prototype'>Prototype</Option>
-              <Option value='wip'>Work in progress</Option>
-              <Option value='concept'>Concept</Option>
-              <Option value='broken'>Broken</Option>
-              <Option value='stealth'>Stealth</Option>
-              <Option value='abandoned'>Abandoned</Option>
+              <Option v-for="(item,index) in categories" :key="index" :value="item.slug">{{ item.name }}</Option>
             </Select>
           </Form-item>
           <Form-item label='选择状态*'>
             <Select v-model='currDate.status' placeholder='请选择'>
-              <Option value='live'>Live</Option>
-              <Option value='beta'>Beta</Option>
-              <Option value='prototype'>Prototype</Option>
-              <Option value='wip'>Work in progress</Option>
-              <Option value='concept'>Concept</Option>
-              <Option value='broken'>Broken</Option>
-              <Option value='stealth'>Stealth</Option>
-              <Option value='abandoned'>Abandoned</Option>
+              <Option v-for="(item,index) in statuses" :key="index" :value="item">{{ item }}</Option>
             </Select>
           </Form-item>
           <Form-item label='描述*'>
@@ -265,6 +250,8 @@ export default {
       DateReady: false, // 判断异步数据加载完成，避免报错
       loading: false, // save
       currDate: {}, // 当前编辑和新增的行数据
+      categories: [], // 分类集合
+      statuses: [], // 状态集合
       currIndex: 0, // 当前编辑和新增的行号
       saveDisabled: false,
       params: {
@@ -493,6 +480,8 @@ export default {
           this.result = responseData.result
           if (this.result) {
             this.listData = this.result.list
+            this.categories = this.result.categories
+            this.statuses = this.result.statuses
             this.DateReady = true
             this.loading2 = false
           }
@@ -651,7 +640,7 @@ export default {
           continue
         }
         if (typeof (params[i]) === 'string' || typeof (params[i]) === 'number' || typeof (params[i]) === 'boolean') {
-          params[i] = encodeURIComponent(params[i])
+          params[i] = params[i] // encodeURIComponent(params[i])
         } else if (Array.isArray(params[i])) { // Array.isArray(params[i])
           params[i].forEach(function (item, index) {
             var key = i
@@ -664,20 +653,23 @@ export default {
       }
     },
     parseParam (param, key) {
-      if (!param) {
-        return
-      }
+      // if (!param) {
+      //   return ''
+      // }
       var self = this
       var paramStr = ''
       if (typeof (param) === 'string' || typeof (param) === 'number' || typeof (param) === 'boolean') {
-        paramStr += '&' + key + '=' + encodeURIComponent(param)
+        paramStr += '&' + key + '=' + param // encodeURIComponent(param)
       } else if (Array.isArray(param)) { // Array.isArray(param)
         param.forEach(function (item, index) {
           var k = key == null ? index : key + (param instanceof Array ? '[' + index + ']' : '.' + index)
           paramStr += '&' + self.parseParam(this, k)
         })
       } else if (typeof (param) === 'object') {
-        paramStr += '&' + self.parseParam(param, key)
+        for (var index in param) {
+          var k = key == null ? index : key + (typeof (param) === 'object' ? '.' + index : '')
+          paramStr += '&' + self.parseParam(param[index], k)
+        }
       }
       return paramStr.substr(1)
     },
@@ -688,11 +680,11 @@ export default {
       this.loading = true
       let params = {}
       // params.name = dappInfo.name
-      params = Object.assign({}, dappInfo)
-      this.transferParams(params)
+      // params = Object.assign({}, dappInfo)
+      // this.transferParams(params) // For GET method
       if (this.currIndex !== -1) { // 编辑模式
         params.id = dappInfo.id
-        updateDappInfo(params).then(res => {
+        updateDappInfo(dappInfo).then(res => {
           console.log('GGGGG:' + JSON.stringify(res))
           let responseData = res.data
           if (!responseData) {

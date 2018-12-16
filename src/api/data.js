@@ -8,11 +8,11 @@ export const getDappInfoListData = (params) => {
   })
 }
 
-export const addDappInfo = (params) => {
+export const addDappInfo = (info) => {
   return axios.request({
     url: 'dappInfo/add.json',
-    params: params,
-    method: 'get'
+    data: info,
+    method: 'post'
   })
 }
 
@@ -24,11 +24,11 @@ export const deleteDappInfo = (params) => {
   })
 }
 
-export const updateDappInfo = (params) => {
+export const updateDappInfo = (info) => {
   return axios.request({
     url: 'dappInfo/update.json',
-    params: params,
-    method: 'get'
+    data: info,
+    method: 'post'
   })
 }
 
