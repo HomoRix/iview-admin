@@ -96,6 +96,134 @@ export const updateCategory = (params) => {
   })
 }
 
+export const getDappUpdateApplicationListData = (params) => {
+  return axios.request({
+    url: 'dappUpdateApplication/list.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const addDappUpdateApplication = (dappUpdateApplication) => {
+  return axios.request({
+    url: 'dappUpdateApplication/add.json',
+    data: dappUpdateApplication,
+    method: 'post'
+  })
+}
+
+export const deleteDappUpdateApplication = (params) => {
+  return axios.request({
+    url: 'dappUpdateApplication/delete.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const updateDappUpdateApplication = (dappUpdateApplication) => {
+  return axios.request({
+    url: 'dappUpdateApplication/update.json',
+    data: dappUpdateApplication,
+    method: 'post'
+  })
+}
+
+export const getDappPromotedApplicationListData = (params) => {
+  return axios.request({
+    url: 'dappPromotedApplication/list.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const addDappPromotedApplication = (dappPromotedApplication) => {
+  return axios.request({
+    url: 'dappPromotedApplication/add.json',
+    data: dappPromotedApplication,
+    method: 'post'
+  })
+}
+
+export const deleteDappPromotedApplication = (params) => {
+  return axios.request({
+    url: 'dappPromotedApplication/delete.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const updateDappPromotedApplication = (dappPromotedApplication) => {
+  return axios.request({
+    url: 'dappPromotedApplication/update.json',
+    data: dappPromotedApplication,
+    method: 'post'
+  })
+}
+
+export const getSubscriberListData = (params) => {
+  return axios.request({
+    url: 'subscriber/list.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const addSubscriber = (subscriber) => {
+  return axios.request({
+    url: 'subscriber/add.json',
+    data: subscriber,
+    method: 'post'
+  })
+}
+
+export const deleteSubscriber = (params) => {
+  return axios.request({
+    url: 'subscriber/delete.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const updateSubscriber = (subscriber) => {
+  return axios.request({
+    url: 'subscriber/update.json',
+    data: subscriber,
+    method: 'post'
+  })
+}
+
+export const getSuggestionSubmitListData = (params) => {
+  return axios.request({
+    url: 'suggestionSubmit/list.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const addSuggestionSubmit = (suggestionSubmit) => {
+  return axios.request({
+    url: 'suggestionSubmit/add.json',
+    data: suggestionSubmit,
+    method: 'post'
+  })
+}
+
+export const deleteSuggestionSubmit = (params) => {
+  return axios.request({
+    url: 'suggestionSubmit/delete.json',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const updateSuggestionSubmit = (suggestionSubmit) => {
+  return axios.request({
+    url: 'suggestionSubmit/update.json',
+    data: suggestionSubmit,
+    method: 'post'
+  })
+}
+
 export const getTableData = () => {
   return axios.request({
     url: 'get_table_data.json',

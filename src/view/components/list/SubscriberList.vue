@@ -8,11 +8,6 @@
             <Form-item label='输入框'>
               <Input v-model='formItem.searchText' placeholder='请输入' style='width:187px'/>
             </Form-item>
-            <Form-item label='选择平台' style='max-height: 50px'>
-              <Select v-model='currDate.category' placeholder='请选择' style='width:187px'>
-                <Option v-for="(item,index) in categories" :key="index" :value="item.slug">{{ item.name }}</Option>
-              </Select>
-            </Form-item>
             <div
               class='clearfix'
               style='border-top:1px solid #eeemargin-top:-15pxpadding-top:10px'
@@ -107,8 +102,8 @@
       </p>
       <div style='text-align:center'>
         <Form :model='formItem' :label-width='80'>
-          <Form-item label='名称*'>
-            <Input v-model='currDate.name' placeholder='请输入'/>
+          <Form-item label='邮箱地址*'>
+            <Input v-model='currDate.email' placeholder='请输入'/>
           </Form-item>
           <Form-item label='创建日期' v-if="currIndex!=-1">
             <!-- <Date-picker
@@ -119,90 +114,6 @@
               :editable='false'
             ></Date-picker> -->
             <span>{{currDate.createDate}}</span>
-          </Form-item>
-          <Form-item label='邮箱*'>
-            <Input v-model='currDate.email' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='作者*'>
-            <Input v-model='currDate.authors' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='Slogan标语*'>
-            <Input v-model='currDate.teaser' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='网站地址*'>
-            <Input v-model='currDate.website' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='DAPP地址'>
-            <Input v-model='currDate.dapp' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='选择分类*'>
-            <Select v-model='currDate.category' placeholder='请选择'>
-              <Option v-for="(item,index) in categories" :key="index" :value="item.slug">{{ item.name }}</Option>
-            </Select>
-          </Form-item>
-          <Form-item label='选择状态*'>
-            <Select v-model='currDate.status' placeholder='请选择'>
-              <Option v-for="(item,index) in statuses" :key="index" :value="item">{{ item }}</Option>
-            </Select>
-          </Form-item>
-          <Form-item label='标签*'>
-            <!-- <Checkbox-group v-model='currDate.tags' @on-change="checkboxChange">
-              <Checkbox v-for="(item,index) in tags" :key="index" :label="item.name"></Checkbox>
-            </Checkbox-group> -->
-            <Checkbox v-for="(item,index) in tags" :key="index" :label="item.name">{{item.name}}</Checkbox>
-          </Form-item>
-          <Form-item label='描述*'>
-            <Input
-              v-model='currDate.description'
-              type='textarea'
-              :autosize='{minRows: 2,maxRows: 5}'
-              placeholder='请输入...'
-            />
-          </Form-item>
-          <Form-item label='Logo*'>
-            <!-- <Input v-model='currDate.logoUrl' placeholder='请输入'/> -->
-            <BaseFileUpload
-              :resize-width="192"
-              message="<span class=dropzone-plus><img width=150 src=/images/upload-logo.png></span><br>Drop your icon here, or click to select"
-              @uploadSuccess="setLogo"
-              @removeFile="removeLogo"/>
-            <img v-bind:src='currDate.logoUrl' v-if="currIndex!=-1"/>
-          </Form-item>
-          <Form-item label='Icon*'>
-            <!-- <Input v-model='currDate.iconUrl' placeholder='请输入'/> -->
-            <BaseFileUpload
-              :resize-width="192"
-              message="<span class=dropzone-plus><img width=150 src=/images/upload-icon.png></span><br>Drop your icon here, or click to select"
-              @uploadSuccess="setIcon"
-              @removeFile="removeIcon"/>
-            <img v-bind:src='currDate.iconUrl' v-if="currIndex!=-1"/>
-          </Form-item>
-          <Form-item label='Product image'>
-            <!-- <Input v-model='currDate.productImage' placeholder='请输入'/> -->
-            <BaseFileUpload
-              :resize-width="192"
-              message="<span class=dropzone-plus><img width=150 src=/images/upload-product-image.png></span><br>Drop your icon here, or click to select"
-              @uploadSuccess="setProductImage"
-              @removeFile="removeProductImage"/>
-            <img v-bind:src='currDate.productImage' v-if="currIndex!=-1"/>
-          </Form-item>
-          <Form-item label='Blog' v-if="currDate.socials">
-            <Input v-model='currDate.socials.blog.path' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='Chat' v-if="currDate.socials">
-            <Input v-model='currDate.socials.chat.path' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='Github' v-if="currDate.socials && currDate.socials.github">
-            <Input v-model='currDate.socials.github.path' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='Reddit' v-if="currDate.socials && currDate.socials.reddit">
-            <Input v-model='currDate.socials.reddit.path' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='Twitter' v-if="currDate.socials && currDate.socials.twitter">
-            <Input v-model='currDate.socials.twitter.path' placeholder='请输入'/>
-          </Form-item>
-          <Form-item label='Facebook' v-if="currDate.socials && currDate.socials.facebook">
-            <Input v-model='currDate.socials.facebook.path' placeholder='请输入'/>
           </Form-item>
         </Form>
       </div>
@@ -222,7 +133,7 @@
 </template>
 <script>
 import elementResizeDetectorMaker from 'element-resize-detector'
-import { getDappInfoListData, deleteDappInfo, updateDappInfo, addDappInfo } from '@/api/data'
+import { getSubscriberListData, deleteSubscriber, updateSubscriber, addSubscriber } from '@/api/data'
 import BaseFileUpload from '../upload/BaseFileUpload'
 var erd = elementResizeDetectorMaker()
 export default {
@@ -233,17 +144,7 @@ export default {
   data () {
     return {
       errorCheckFields: [
-        'authors',
-        'category',
-        'description',
-        'email',
-        'name',
-        'status',
-        'tags',
-        'teaser',
-        'website',
-        'icon',
-        'logo'
+        'email'
       ],
       formItem: {
         searchText: ''
@@ -259,15 +160,11 @@ export default {
       DateReady: false, // 判断异步数据加载完成，避免报错
       loading: false, // save
       currDate: {}, // 当前编辑和新增的行数据
-      categories: [], // 分类集合
-      tags: [], // 标签集合
-      statuses: [], // 状态集合
       currIndex: 0, // 当前编辑和新增的行号
       saveDisabled: false,
       params: {
         page: 1,
         limit: 10,
-        category: '',
         searchText: ''
       },
       selection: [], // 表格选中项
@@ -289,47 +186,9 @@ export default {
           width: 130
         },
         {
-          title: '名称',
-          key: 'name',
-          // className: 'min-width',
-          fixed: 'left',
-          width: 130
-        },
-        {
-          title: '邮箱',
+          title: '邮箱地址',
           key: 'email',
-          // className: 'min-width',
-          width: 130
-        },
-        {
-          title: 'slogan标语',
-          key: 'teaser',
-          // className: 'min-width',
-          width: 130
-        },
-        {
-          title: '许可证',
-          key: 'license',
-          // className: 'min-width',
-          width: 130
-        },
-        {
-          title: '分类',
-          key: 'category',
-          // className: 'min-width',
-          width: 130
-        },
-        {
-          title: '平台',
-          key: 'platform',
-          // className: 'min-width',
-          width: 130
-        },
-        {
-          title: '状态',
-          key: 'status',
-          // className: 'min-width',
-          width: 130
+          className: 'min-width'
         },
         {
           title: '操作',
@@ -443,33 +302,6 @@ export default {
     }
   },
   methods: {
-    setLogo (response) {
-      if (response) {
-        this.currDate.logoUrl = response.url || ''
-      }
-    },
-    removeLogo () {
-      this.currDate.logoUrl = ''
-    },
-    setIcon (response) {
-      if (response) {
-        this.currDate.iconUrl = response.url || ''
-      }
-    },
-    removeIcon () {
-      this.currDate.iconUrl = ''
-    },
-    setProductImage (response) {
-      if (response) {
-        this.currDate.productImage = response.url || ''
-      }
-    },
-    removeProductImage () {
-      this.currDate.productImage = ''
-    },
-    checkboxChange (data) {
-      console.log('CheckboxChanged:' + data)
-    },
     searchShow () {
       this.searchState = !this.searchState
     },
@@ -484,7 +316,7 @@ export default {
      * */
     getData (params) {
       this.loading2 = true
-      getDappInfoListData(params).then(res => {
+      getSubscriberListData(params).then(res => {
         let responseData = res.data
         if (!responseData) {
           return
@@ -493,9 +325,6 @@ export default {
           this.result = responseData.result
           if (this.result) {
             this.listData = this.result.list
-            this.categories = this.result.categories
-            this.tags = this.result.tags
-            this.statuses = this.result.statuses
             this.DateReady = true
             this.loading2 = false
           }
@@ -524,42 +353,45 @@ export default {
      * @edit
      */
     show (index) {
+      var checkedActions = this.listData[index].checkedActions
+      var targetStr = ''
+      if (checkedActions) {
+        for (var i in checkedActions) {
+          if (checkedActions[i] === 'Status') {
+            targetStr += ((parseInt(i) + 1) + '.') + 'Update the status<br/>'
+          } else if (checkedActions[i] === 'Other') {
+            targetStr += ((parseInt(i) + 1) + '.') + 'Update the description/author/other text<br/>'
+          } else if (checkedActions[i] === 'Links') {
+            targetStr += ((parseInt(i) + 1) + '.') + 'Report broken/missing link(s)<br/>'
+          } else if (checkedActions[i] === 'Tags') {
+            targetStr += ((parseInt(i) + 1) + '.') + 'Report incorrect tags<br/>'
+          } else if (checkedActions[i] === 'Contracts') {
+            targetStr += ((parseInt(i) + 1) + '.') + 'Add / update contract addresses<br/>'
+          } else if (checkedActions[i] === 'Image') {
+            targetStr += ((parseInt(i) + 1) + '.') + 'Add logo / icon / image URLs<br/>'
+          } else if (checkedActions[i] === 'Flag') {
+            targetStr += ((parseInt(i) + 1) + '.') + 'Flag this DApp as inappropriate<br/>'
+          }
+        }
+      }
       this.currIndex = index
       this.currDate = this.listData[index]
       this.detailModal = true
       this.$Modal.info({
         title: '详情',
-        content: `名称：${this.listData[index].name}<br>邮箱：${
-          this.listData[index].email
-        }<br>分类：${this.listData[index].category}<br>状态：${
-          this.listData[index].status
-        }<br>Slogan标语：${
-          this.listData[index].teaser
-        }<br>Logo：<image src='${
-          this.listData[index].logoUrl
-        }'/><br>Icon：<image src='${
-          this.listData[index].iconUrl
-        }'/><br>ProductImage：<image src='${
-          this.listData[index].productImage
-        }'/><br>Blog：${
-          this.listData[index].socials.blog.path
-        }<br>Chat：${
-          this.listData[index].socials.chat.path
-        }<br>Github：${
-          this.listData[index].socials.github.path
-        }<br>Reddit：${
-          this.listData[index].socials.reddit.path
-        }<br>Twitter：${
-          this.listData[index].socials.twitter.path
-        }<br>Facebook：${
-          this.listData[index].socials.facebook.path
+        content: `DAPP名称：${this.listData[index].dapp}<br>更新申请者名称：${
+          this.listData[index].name
+        }<br>更新申请者邮箱：${this.listData[index].email}<br>更新建议：${
+          this.listData[index].suggestions
+        }<br>更新类目：${
+          targetStr
         }`
       })
     },
     remove (tagId, index) {
       let params = {}
       params.ids = tagId
-      deleteDappInfo(params).then(res => {
+      deleteSubscriber(params).then(res => {
         let responseData = res.data
         if (!responseData) {
           return
@@ -577,34 +409,8 @@ export default {
       if (index === -1) {
         // 新增
         this.currDate = {
-          socials: {
-            blog: { path: null },
-            chat: { path: null },
-            reddit: { path: null },
-            twitter: { path: null },
-            github: { path: null },
-            facebook: { path: null }
-          },
           createDate: '',
-          name: '',
-          description: '',
-          status: '',
-          teaser: '',
-          email: '',
-          category: '',
-          dapp: '',
-          website: '',
-          authors: '',
-          tags: '',
-          badges: '',
-          audits: '',
-          license: '',
-          logoUrl: '',
-          iconUrl: '',
-          productImage: '',
-          platform: '',
-          imageKeyVisual: '',
-          submitReason: ''
+          email: ''
         }
       } else {
         // 编辑
@@ -629,7 +435,7 @@ export default {
       // ...
       let params = {}
       params.ids = tagIds.join()
-      deleteDappInfo(params).then(res => {
+      deleteSubscriber(params).then(res => {
         let responseData = res.data
         if (!responseData) {
           return
@@ -687,18 +493,18 @@ export default {
       }
       return paramStr.substr(1)
     },
-    saveBatch (dappInfo) {
-      if (!dappInfo) {
+    saveBatch (subscriber) {
+      if (!subscriber) {
         return
       }
       this.loading = true
       let params = {}
-      // params.name = dappInfo.name
-      // params = Object.assign({}, dappInfo)
+      // params.name = subscriber.name
+      // params = Object.assign({}, subscriber)
       // this.transferParams(params) // For GET method
       if (this.currIndex !== -1) { // 编辑模式
-        params.id = dappInfo.id
-        updateDappInfo(dappInfo).then(res => {
+        params.id = subscriber.id
+        updateSubscriber(subscriber).then(res => {
           console.log('GGGGG:' + JSON.stringify(res))
           let responseData = res.data
           if (!responseData) {
@@ -718,7 +524,7 @@ export default {
           }
         })
       } else {
-        addDappInfo(dappInfo).then(res => {
+        addSubscriber(subscriber).then(res => {
           let responseData = res.data
           if (!responseData) {
             return
@@ -794,6 +600,24 @@ export default {
     display: block;
   }
 }
+
+.fields {
+  border-radius: 4px;
+  background: darken(#eee, 4%);
+  padding: 10px 20px;
+  margin-top: 20px;
+}
+
+.checkboxes {
+  margin: 12px 0 0 0;
+  width: 500px;
+}
+
+.checkbox-field {
+  margin-top: 9px;
+  display: flex;
+}
+
 .ivu-select-dropdown-list {
     min-width: 100%;
     list-style: none;
