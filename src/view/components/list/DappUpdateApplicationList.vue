@@ -5,7 +5,7 @@
       <Col>
         <Card>
           <Form :label-width='80' inline>
-            <Form-item label='输入框'>
+            <Form-item label='DAPP名称'>
               <Input v-model='formItem.searchText' placeholder='请输入' style='width:187px'/>
             </Form-item>
             <div
@@ -641,7 +641,6 @@ export default {
       if (this.currIndex !== -1) { // 编辑模式
         params.id = dappUpdateApplication.id
         updateDappUpdateApplication(dappUpdateApplication).then(res => {
-          console.log('GGGGG:' + JSON.stringify(res))
           let responseData = res.data
           if (!responseData) {
             return

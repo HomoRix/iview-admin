@@ -5,7 +5,7 @@
       <Col>
         <Card>
           <Form :label-width='80' inline>
-            <Form-item label='输入框'>
+            <Form-item label='DAPP名称'>
               <Input v-model='formItem.searchText' placeholder='请输入' style='width:187px'/>
             </Form-item>
             <div
@@ -102,8 +102,8 @@
       </p>
       <div style='text-align:center'>
         <Form :model='formItem' :label-width='80'>
-          <Form-item label='DAPP名称*'>
-            <Input v-model='currDate.dapp' placeholder='请输入'/>
+          <Form-item label='名称*'>
+            <Input v-model='currDate.name' placeholder='请输入'/>
           </Form-item>
           <Form-item label='创建日期' v-if="currIndex!=-1">
             <!-- <Date-picker
@@ -115,98 +115,89 @@
             ></Date-picker> -->
             <span>{{currDate.createDate}}</span>
           </Form-item>
-          <Form-item label='更新申请者邮箱*'>
+          <Form-item label='邮箱*'>
             <Input v-model='currDate.email' placeholder='请输入'/>
           </Form-item>
-          <Form-item label='更新申请者名称*'>
-            <Input v-model='currDate.name' placeholder='请输入'/>
+          <Form-item label='作者*'>
+            <Input v-model='processedAuthors' placeholder='请输入'/>
           </Form-item>
-          <Form-item label='类目*'>
-            <!-- <Input v-model='currDate.checkedActions' placeholder='请输入'/> -->
-            <div class='checkboxes'>
-              <div class='checkbox-field'>
-                <input
-                  id='status'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Status'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='status'>Update the status</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='other'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Other'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='other'>Update the description/author/other text</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='links'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Links'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='links'>Report broken/missing link(s)</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='tags'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Tags'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='tags'>Report incorrect tags</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='contracts'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Contracts'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='contracts'>Add / update contract addresses</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='image'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Image'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='image'>Add logo / icon / image URLs (<a
-                    href='https://cdn.stateofthedapps.com/image_guidelines_08152018.png'
-                    target='_blank'>view image guidelines here</a>)</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='flag'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Flag'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='flag'>Flag this DApp as inappropriate</label>
-              </div>
-            </div>
+          <Form-item label='Slogan标语*'>
+            <Input v-model='currDate.teaser' placeholder='请输入'/>
           </Form-item>
-          <Form-item label='更新建议*'>
-            <Input v-model='currDate.suggestions' placeholder='请输入'/>
+          <Form-item label='网站地址*'>
+            <Input v-model='currDate.website' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='DAPP地址'>
+            <Input v-model='currDate.dapp' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='选择分类*'>
+            <Select v-model='currDate.category' placeholder='请选择'>
+              <Option v-for="(item,index) in categories" :key="index" :value="item.slug">{{ item.name }}</Option>
+            </Select>
+          </Form-item>
+          <Form-item label='选择状态*'>
+            <Select v-model='currDate.status' placeholder='请选择'>
+              <Option v-for="(item,index) in statuses" :key="index" :value="item">{{ item }}</Option>
+            </Select>
+          </Form-item>
+          <Form-item label='标签*'>
+            <!-- <Checkbox-group v-model='currDate.tags' @on-change="checkboxChange">
+              <Checkbox v-for="(item,index) in tags" :key="index" :label="item.name"></Checkbox>
+            </Checkbox-group> -->
+            <Checkbox v-for="(item,index) in tags" :key="index" :label="item.name">{{item.name}}</Checkbox>
+          </Form-item>
+          <Form-item label='描述*'>
+            <Input
+              v-model='currDate.description'
+              type='textarea'
+              :autosize='{minRows: 2,maxRows: 5}'
+              placeholder='请输入...'
+            />
+          </Form-item>
+          <Form-item label='Logo*'>
+            <!-- <Input v-model='currDate.logoUrl' placeholder='请输入'/> -->
+            <BaseFileUpload
+              :resize-width="192"
+              message="<span class=dropzone-plus><img width=150 src=/images/upload-logo.png></span><br>Drop your icon here, or click to select"
+              @uploadSuccess="setLogo"
+              @removeFile="removeLogo"/>
+            <img v-bind:src='currDate.logoUrl' v-if="currIndex!=-1"/>
+          </Form-item>
+          <Form-item label='Icon*'>
+            <!-- <Input v-model='currDate.iconUrl' placeholder='请输入'/> -->
+            <BaseFileUpload
+              :resize-width="192"
+              message="<span class=dropzone-plus><img width=150 src=/images/upload-icon.png></span><br>Drop your icon here, or click to select"
+              @uploadSuccess="setIcon"
+              @removeFile="removeIcon"/>
+            <img v-bind:src='currDate.iconUrl' v-if="currIndex!=-1"/>
+          </Form-item>
+          <Form-item label='Product image'>
+            <!-- <Input v-model='currDate.productImage' placeholder='请输入'/> -->
+            <BaseFileUpload
+              :resize-width="192"
+              message="<span class=dropzone-plus><img width=150 src=/images/upload-product-image.png></span><br>Drop your icon here, or click to select"
+              @uploadSuccess="setProductImage"
+              @removeFile="removeProductImage"/>
+            <img v-bind:src='currDate.productImage' v-if="currIndex!=-1"/>
+          </Form-item>
+          <Form-item label='Blog' v-if="currDate.socials">
+            <Input v-model='currDate.socials.blog.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Chat' v-if="currDate.socials">
+            <Input v-model='currDate.socials.chat.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Github' v-if="currDate.socials && currDate.socials.github">
+            <Input v-model='currDate.socials.github.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Reddit' v-if="currDate.socials && currDate.socials.reddit">
+            <Input v-model='currDate.socials.reddit.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Twitter' v-if="currDate.socials && currDate.socials.twitter">
+            <Input v-model='currDate.socials.twitter.path' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='Facebook' v-if="currDate.socials && currDate.socials.facebook">
+            <Input v-model='currDate.socials.facebook.path' placeholder='请输入'/>
           </Form-item>
         </Form>
       </div>
@@ -237,11 +228,17 @@ export default {
   data () {
     return {
       errorCheckFields: [
-        'dapp',
-        'name',
+        'authors',
+        'category',
+        'description',
         'email',
-        'checkedActions',
-        'suggestions'
+        'name',
+        'status',
+        'tags',
+        'teaser',
+        'website',
+        'icon',
+        'logo'
       ],
       formItem: {
         searchText: ''
@@ -287,30 +284,47 @@ export default {
           width: 130
         },
         {
-          title: '更新的DAPP名称',
-          key: 'dapp',
-          className: 'min-width',
-          fixed: 'left'
-        },
-        {
-          title: '更新申请者名称',
+          title: '名称',
           key: 'name',
-          className: 'min-width'
+          // className: 'min-width',
+          fixed: 'left',
+          width: 130
         },
         {
-          title: '更新申请者邮箱',
+          title: '邮箱',
           key: 'email',
-          className: 'min-width'
+          // className: 'min-width',
+          width: 130
         },
         {
-          title: '更新类目',
-          key: 'checkedActions',
-          className: 'min-width'
+          title: 'slogan标语',
+          key: 'teaser',
+          // className: 'min-width',
+          width: 130
         },
         {
-          title: '更新建议',
-          key: 'suggestions',
-          className: 'min-width'
+          title: '许可证',
+          key: 'license',
+          // className: 'min-width',
+          width: 130
+        },
+        {
+          title: '分类',
+          key: 'category',
+          // className: 'min-width',
+          width: 130
+        },
+        {
+          title: '平台',
+          key: 'platform',
+          // className: 'min-width',
+          width: 130
+        },
+        {
+          title: '状态',
+          key: 'status',
+          // className: 'min-width',
+          width: 130
         },
         {
           title: '操作',
@@ -421,9 +435,49 @@ export default {
   computed: {
     state () {
       return this.$store.state.app
+    },
+    processedAuthors: {
+      get () {
+        if (this.currDate && this.currDate.authors) {
+          const values = this.currDate.authors.slice()
+          return values.join(', ')
+        }
+        return ''
+      },
+      set (value) {
+        const values = value.split(', ')
+        this.currDate.authors = values
+      }
     }
   },
   methods: {
+    setLogo (response) {
+      if (response) {
+        this.currDate.logoUrl = response.url || ''
+      }
+    },
+    removeLogo () {
+      this.currDate.logoUrl = ''
+    },
+    setIcon (response) {
+      if (response) {
+        this.currDate.iconUrl = response.url || ''
+      }
+    },
+    removeIcon () {
+      this.currDate.iconUrl = ''
+    },
+    setProductImage (response) {
+      if (response) {
+        this.currDate.productImage = response.url || ''
+      }
+    },
+    removeProductImage () {
+      this.currDate.productImage = ''
+    },
+    checkboxChange (data) {
+      console.log('CheckboxChanged:' + data)
+    },
     searchShow () {
       this.searchState = !this.searchState
     },
@@ -447,6 +501,9 @@ export default {
           this.result = responseData.result
           if (this.result) {
             this.listData = this.result.list
+            this.categories = this.result.categories
+            this.tags = this.result.tags
+            this.statuses = this.result.statuses
             this.DateReady = true
             this.loading2 = false
           }
@@ -475,38 +532,35 @@ export default {
      * @edit
      */
     show (index) {
-      var checkedActions = this.listData[index].checkedActions
-      var targetStr = ''
-      if (checkedActions) {
-        for (var i in checkedActions) {
-          if (checkedActions[i] === 'Status') {
-            targetStr += ((parseInt(i) + 1) + '.') + 'Update the status<br/>'
-          } else if (checkedActions[i] === 'Other') {
-            targetStr += ((parseInt(i) + 1) + '.') + 'Update the description/author/other text<br/>'
-          } else if (checkedActions[i] === 'Links') {
-            targetStr += ((parseInt(i) + 1) + '.') + 'Report broken/missing link(s)<br/>'
-          } else if (checkedActions[i] === 'Tags') {
-            targetStr += ((parseInt(i) + 1) + '.') + 'Report incorrect tags<br/>'
-          } else if (checkedActions[i] === 'Contracts') {
-            targetStr += ((parseInt(i) + 1) + '.') + 'Add / update contract addresses<br/>'
-          } else if (checkedActions[i] === 'Image') {
-            targetStr += ((parseInt(i) + 1) + '.') + 'Add logo / icon / image URLs<br/>'
-          } else if (checkedActions[i] === 'Flag') {
-            targetStr += ((parseInt(i) + 1) + '.') + 'Flag this DApp as inappropriate<br/>'
-          }
-        }
-      }
       this.currIndex = index
       this.currDate = this.listData[index]
       this.detailModal = true
       this.$Modal.info({
         title: '详情',
-        content: `DAPP名称：${this.listData[index].dapp}<br>更新申请者名称：${
-          this.listData[index].name
-        }<br>更新申请者邮箱：${this.listData[index].email}<br>更新建议：${
-          this.listData[index].suggestions
-        }<br>更新类目：${
-          targetStr
+        content: `名称：${this.listData[index].name}<br>邮箱：${
+          this.listData[index].email
+        }<br>分类：${this.listData[index].category}<br>状态：${
+          this.listData[index].status
+        }<br>Slogan标语：${
+          this.listData[index].teaser
+        }<br>Logo：<image src='${
+          this.listData[index].logoUrl
+        }'/><br>Icon：<image src='${
+          this.listData[index].iconUrl
+        }'/><br>ProductImage：<image src='${
+          this.listData[index].productImage
+        }'/><br>Blog：${
+          this.listData[index].socials.blog.path
+        }<br>Chat：${
+          this.listData[index].socials.chat.path
+        }<br>Github：${
+          this.listData[index].socials.github.path
+        }<br>Reddit：${
+          this.listData[index].socials.reddit.path
+        }<br>Twitter：${
+          this.listData[index].socials.twitter.path
+        }<br>Facebook：${
+          this.listData[index].socials.facebook.path
         }`
       })
     },
@@ -653,7 +707,6 @@ export default {
       if (this.currIndex !== -1) { // 编辑模式
         params.id = suggestionSubmit.id
         updateSuggestionSubmit(suggestionSubmit).then(res => {
-          console.log('GGGGG:' + JSON.stringify(res))
           let responseData = res.data
           if (!responseData) {
             return
@@ -748,24 +801,6 @@ export default {
     display: block;
   }
 }
-
-.fields {
-  border-radius: 4px;
-  background: darken(#eee, 4%);
-  padding: 10px 20px;
-  margin-top: 20px;
-}
-
-.checkboxes {
-  margin: 12px 0 0 0;
-  width: 500px;
-}
-
-.checkbox-field {
-  margin-top: 9px;
-  display: flex;
-}
-
 .ivu-select-dropdown-list {
     min-width: 100%;
     list-style: none;

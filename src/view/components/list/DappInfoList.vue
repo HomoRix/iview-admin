@@ -124,7 +124,7 @@
             <Input v-model='currDate.email' placeholder='请输入'/>
           </Form-item>
           <Form-item label='作者*'>
-            <Input v-model='currDate.authors' placeholder='请输入'/>
+            <Input v-model='processedAuthors' placeholder='请输入'/>
           </Form-item>
           <Form-item label='Slogan标语*'>
             <Input v-model='currDate.teaser' placeholder='请输入'/>
@@ -425,11 +425,22 @@ export default {
         for (let i = 0; i < keys.length; i++) {
           if (this.errorCheckFields && (this.errorCheckFields.indexOf(keys[i]) > -1)) {
             // console.log('valddd:' + keys[i] + ',' + Object.values(val)[i])
-            if (Object.values(val)[i] === '') {
-              this.saveDisabled = true
-              return
+            if (Array.isArray(Object.values(val)[i])) {
+              if (Object.values(val)[i].length === 0) {
+                console.log('valddd:' + keys[i] + ',' + Object.values(val)[i])
+                this.saveDisabled = true
+                return
+              } else {
+                this.saveDisabled = false
+              }
             } else {
-              this.saveDisabled = false
+              if (Object.values(val)[i] === '') {
+                console.log('valdddsss:' + keys[i] + ',' + Object.values(val)[i])
+                this.saveDisabled = true
+                return
+              } else {
+                this.saveDisabled = false
+              }
             }
           }
         }
@@ -440,6 +451,19 @@ export default {
   computed: {
     state () {
       return this.$store.state.app
+    },
+    processedAuthors: {
+      get () {
+        if (this.currDate && this.currDate.authors) {
+          const values = this.currDate.authors.slice()
+          return values.join(', ')
+        }
+        return ''
+      },
+      set (value) {
+        const values = value.split(', ')
+        this.currDate.authors = values
+      }
     }
   },
   methods: {
@@ -594,7 +618,7 @@ export default {
           category: '',
           dapp: '',
           website: '',
-          authors: '',
+          authors: [],
           tags: '',
           badges: '',
           audits: '',
@@ -699,7 +723,6 @@ export default {
       if (this.currIndex !== -1) { // 编辑模式
         params.id = dappInfo.id
         updateDappInfo(dappInfo).then(res => {
-          console.log('GGGGG:' + JSON.stringify(res))
           let responseData = res.data
           if (!responseData) {
             return

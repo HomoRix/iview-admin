@@ -5,7 +5,7 @@
       <Col>
         <Card>
           <Form :label-width='80' inline>
-            <Form-item label='输入框'>
+            <Form-item label='DAPP名称'>
               <Input v-model='formItem.searchText' placeholder='请输入' style='width:187px'/>
             </Form-item>
             <div
@@ -115,98 +115,26 @@
             ></Date-picker> -->
             <span>{{currDate.createDate}}</span>
           </Form-item>
-          <Form-item label='更新申请者邮箱*'>
+          <Form-item label='推广申请者邮箱*'>
             <Input v-model='currDate.email' placeholder='请输入'/>
           </Form-item>
-          <Form-item label='更新申请者名称*'>
+          <Form-item label='推广申请者名称*'>
             <Input v-model='currDate.name' placeholder='请输入'/>
           </Form-item>
-          <Form-item label='类目*'>
-            <!-- <Input v-model='currDate.checkedActions' placeholder='请输入'/> -->
-            <div class='checkboxes'>
-              <div class='checkbox-field'>
-                <input
-                  id='status'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Status'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='status'>Update the status</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='other'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Other'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='other'>Update the description/author/other text</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='links'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Links'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='links'>Report broken/missing link(s)</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='tags'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Tags'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='tags'>Report incorrect tags</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='contracts'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Contracts'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='contracts'>Add / update contract addresses</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='image'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Image'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='image'>Add logo / icon / image URLs (<a
-                    href='https://cdn.stateofthedapps.com/image_guidelines_08152018.png'
-                    target='_blank'>view image guidelines here</a>)</label>
-              </div>
-              <div class='checkbox-field'>
-                <input
-                  id='flag'
-                  v-model='currDate.checkedActions'
-                  class='checkbox-input'
-                  value='Flag'
-                  type='checkbox'>
-                <label
-                  class='checkbox-label'
-                  for='flag'>Flag this DApp as inappropriate</label>
-              </div>
-            </div>
+          <Form-item label='所在国家地区*'>
+            <Input v-model='currDate.country' placeholder='请输入'/>
           </Form-item>
-          <Form-item label='更新建议*'>
-            <Input v-model='currDate.suggestions' placeholder='请输入'/>
+          <Form-item label='DAPP官网地址'>
+            <Input v-model='currDate.website' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='预算*'>
+            <Input v-model='currDate.budget' placeholder='请输入'/>
+          </Form-item>
+          <Form-item label='是否提交过DAPP*'>
+            <RadioGroup v-model="currDate.hasSubmittedDapp">
+              <Radio label="Yes"></Radio>
+              <Radio label="No"></Radio>
+            </RadioGroup>
           </Form-item>
         </Form>
       </div>
@@ -240,8 +168,9 @@ export default {
         'dapp',
         'name',
         'email',
-        'checkedActions',
-        'suggestions'
+        'country',
+        'budget',
+        'hasSubmittedDapp'
       ],
       formItem: {
         searchText: ''
@@ -257,9 +186,6 @@ export default {
       DateReady: false, // 判断异步数据加载完成，避免报错
       loading: false, // save
       currDate: {}, // 当前编辑和新增的行数据
-      categories: [], // 分类集合
-      tags: [], // 标签集合
-      statuses: [], // 状态集合
       currIndex: 0, // 当前编辑和新增的行号
       saveDisabled: false,
       params: {
@@ -287,30 +213,35 @@ export default {
           width: 130
         },
         {
-          title: '更新的DAPP名称',
+          title: '推广的DAPP名称',
           key: 'dapp',
-          className: 'min-width',
+          width: 130,
           fixed: 'left'
         },
         {
-          title: '更新申请者名称',
+          title: '推广申请者名称',
           key: 'name',
-          className: 'min-width'
+          width: 130
         },
         {
-          title: '更新申请者邮箱',
+          title: '推广申请者邮箱',
           key: 'email',
-          className: 'min-width'
+          width: 130
         },
         {
-          title: '更新类目',
-          key: 'checkedActions',
-          className: 'min-width'
+          title: '所在国家地区',
+          key: 'country',
+          width: 130
         },
         {
-          title: '更新建议',
-          key: 'suggestions',
-          className: 'min-width'
+          title: 'DAPP官网地址',
+          key: 'website',
+          width: 130
+        },
+        {
+          title: '是否提交过DAPP',
+          key: 'hasSubmittedDapp',
+          width: 130
         },
         {
           title: '操作',
@@ -531,34 +462,13 @@ export default {
       if (index === -1) {
         // 新增
         this.currDate = {
-          socials: {
-            blog: { path: null },
-            chat: { path: null },
-            reddit: { path: null },
-            twitter: { path: null },
-            github: { path: null },
-            facebook: { path: null }
-          },
-          createDate: '',
           name: '',
-          description: '',
-          status: '',
-          teaser: '',
           email: '',
-          category: '',
           dapp: '',
-          website: '',
-          authors: '',
-          tags: '',
-          badges: '',
-          audits: '',
-          license: '',
-          logoUrl: '',
-          iconUrl: '',
-          productImage: '',
-          platform: '',
-          imageKeyVisual: '',
-          submitReason: ''
+          country: '',
+          budget: '',
+          hasSubmittedDapp: 'No',
+          website: ''
         }
       } else {
         // 编辑
@@ -653,7 +563,6 @@ export default {
       if (this.currIndex !== -1) { // 编辑模式
         params.id = dappPromotedApplication.id
         updateDappPromotedApplication(dappPromotedApplication).then(res => {
-          console.log('GGGGG:' + JSON.stringify(res))
           let responseData = res.data
           if (!responseData) {
             return
